@@ -213,6 +213,9 @@ def format_assistant_reply(content: str, translate_markdown: bool) -> str:
         ("```\\s*[Mm]atlab\n", "```\n"),
         ("```\\s*[Jj][Ss][Oo][Nn]\n", "```\n"),
         ("```\\s*[Ll]a[Tt]e[Xx]\n", "```\n"),
+        ("```\\s*bash\n", "```\n"),
+        ("```\\s*zsh\n", "```\n"),
+        ("```\\s*sh\n", "```\n"),
         ("```\\s*[Ss][Qq][Ll]\n", "```\n"),
         ("```\\s*[Pp][Hh][Pp]\n", "```\n"),
         ("```\\s*[Pp][Ee][Rr][Ll]\n", "```\n"),
@@ -227,3 +230,13 @@ def format_assistant_reply(content: str, translate_markdown: bool) -> str:
         content = markdown_to_slack(content)
 
     return content
+
+
+def build_system_text(
+    system_text_template: str, translate_markdown: bool, context: BoltContext
+):
+    system_text = system_text_template.format(bot_user_id=context.bot_user_id)
+    # Translate format hint in system prompt
+    if translate_markdown is True:
+        system_text = slack_to_markdown(system_text)
+    return system_text
